@@ -406,8 +406,8 @@ Detects NVRM Xid 144 and reports it by the immediate action NVIDIA's Xid 144-150
   - Message: GPU Xid 144 detected: NVLink SAW error. Its resolution defers to an Xid 154 for the affected GPU whose recovery action this catalog could not read or does not recognize; treat the fault as unresolved and report the Xid 154 line.
   - Action: operational state `drain`, then `service_required`
 - **WARNING** when `"144.XID_154_MISSING" in nvlink5_resolution_counts && nvlink5_resolution_counts["144.XID_154_MISSING"] >= occurrences`
-  - Message: GPU Xid 144 detected: NVLink SAW error. Its resolution defers to Xid 154, and no Xid 154 was found for the affected GPU, which normally means the driver requested no recovery action. Restart the faulting application; send the node for service if the error persists.
-  - Action: operational state `drain`, then `restart_app` → `service_required`
+  - Message: GPU Xid 144 detected: NVLink SAW error. Its resolution defers to Xid 154, and no Xid 154 was found for the affected GPU, which normally means the driver requested no recovery action. Restart the faulting application.
+  - Action: operational state `drain`, then `restart_app`
 - **WARNING** when `"144.UNDECODED" in nvlink5_resolution_counts && nvlink5_resolution_counts["144.UNDECODED"] >= occurrences`
   - Message: GPU Xid 144 detected: NVLink SAW error. Its log line could not be decoded, so its severity and required action are unknown; inspect the line in the system journal.
 - **INFO** when `"144.IGNORE" in nvlink5_resolution_counts && nvlink5_resolution_counts["144.IGNORE"] >= occurrences`
@@ -454,8 +454,8 @@ Detects NVRM Xid 145 and reports it by the immediate action NVIDIA's Xid 144-150
   - Message: GPU Xid 145 detected: NVLink RLW error. Its resolution defers to an Xid 154 for the affected GPU whose recovery action this catalog could not read or does not recognize; treat the fault as unresolved and report the Xid 154 line.
   - Action: operational state `drain`, then `service_required`
 - **WARNING** when `"145.XID_154_MISSING" in nvlink5_resolution_counts && nvlink5_resolution_counts["145.XID_154_MISSING"] >= occurrences`
-  - Message: GPU Xid 145 detected: NVLink RLW error. Its resolution defers to Xid 154, and no Xid 154 was found for the affected GPU, which normally means the driver requested no recovery action. Restart the faulting application; send the node for service if the error persists.
-  - Action: operational state `drain`, then `restart_app` → `service_required`
+  - Message: GPU Xid 145 detected: NVLink RLW error. Its resolution defers to Xid 154, and no Xid 154 was found for the affected GPU, which normally means the driver requested no recovery action. Restart the faulting application.
+  - Action: operational state `drain`, then `restart_app`
 - **WARNING** when `"145.UNDECODED" in nvlink5_resolution_counts && nvlink5_resolution_counts["145.UNDECODED"] >= occurrences`
   - Message: GPU Xid 145 detected: NVLink RLW error. Its log line could not be decoded, so its severity and required action are unknown; inspect the line in the system journal.
 - **INFO** when `"145.IGNORE" in nvlink5_resolution_counts && nvlink5_resolution_counts["145.IGNORE"] >= occurrences`
@@ -502,8 +502,8 @@ Detects NVRM Xid 146 and reports it by the immediate action NVIDIA's Xid 144-150
   - Message: GPU Xid 146 detected: NVLink TLW error. Its resolution defers to an Xid 154 for the affected GPU whose recovery action this catalog could not read or does not recognize; treat the fault as unresolved and report the Xid 154 line.
   - Action: operational state `drain`, then `service_required`
 - **WARNING** when `"146.XID_154_MISSING" in nvlink5_resolution_counts && nvlink5_resolution_counts["146.XID_154_MISSING"] >= occurrences`
-  - Message: GPU Xid 146 detected: NVLink TLW error. Its resolution defers to Xid 154, and no Xid 154 was found for the affected GPU, which normally means the driver requested no recovery action. Restart the faulting application; send the node for service if the error persists.
-  - Action: operational state `drain`, then `restart_app` → `service_required`
+  - Message: GPU Xid 146 detected: NVLink TLW error. Its resolution defers to Xid 154, and no Xid 154 was found for the affected GPU, which normally means the driver requested no recovery action. Restart the faulting application.
+  - Action: operational state `drain`, then `restart_app`
 - **WARNING** when `"146.UNDECODED" in nvlink5_resolution_counts && nvlink5_resolution_counts["146.UNDECODED"] >= occurrences`
   - Message: GPU Xid 146 detected: NVLink TLW error. Its log line could not be decoded, so its severity and required action are unknown; inspect the line in the system journal.
 - **INFO** when `"146.IGNORE" in nvlink5_resolution_counts && nvlink5_resolution_counts["146.IGNORE"] >= occurrences`
@@ -550,8 +550,8 @@ Detects NVRM Xid 147 and reports it by the immediate action NVIDIA's Xid 144-150
   - Message: GPU Xid 147 detected: NVLink TREX error. Its resolution defers to an Xid 154 for the affected GPU whose recovery action this catalog could not read or does not recognize; treat the fault as unresolved and report the Xid 154 line.
   - Action: operational state `drain`, then `service_required`
 - **WARNING** when `"147.XID_154_MISSING" in nvlink5_resolution_counts && nvlink5_resolution_counts["147.XID_154_MISSING"] >= occurrences`
-  - Message: GPU Xid 147 detected: NVLink TREX error. Its resolution defers to Xid 154, and no Xid 154 was found for the affected GPU, which normally means the driver requested no recovery action. Restart the faulting application; send the node for service if the error persists.
-  - Action: operational state `drain`, then `restart_app` → `service_required`
+  - Message: GPU Xid 147 detected: NVLink TREX error. Its resolution defers to Xid 154, and no Xid 154 was found for the affected GPU, which normally means the driver requested no recovery action. Restart the faulting application.
+  - Action: operational state `drain`, then `restart_app`
 - **WARNING** when `"147.UNDECODED" in nvlink5_resolution_counts && nvlink5_resolution_counts["147.UNDECODED"] >= occurrences`
   - Message: GPU Xid 147 detected: NVLink TREX error. Its log line could not be decoded, so its severity and required action are unknown; inspect the line in the system journal.
 - **INFO** when `"147.IGNORE" in nvlink5_resolution_counts && nvlink5_resolution_counts["147.IGNORE"] >= occurrences`
@@ -598,8 +598,8 @@ Detects NVRM Xid 148 and reports it by the immediate action NVIDIA's Xid 144-150
   - Message: GPU Xid 148 detected: NVLink NVLPW_CTRL error. Its resolution defers to an Xid 154 for the affected GPU whose recovery action this catalog could not read or does not recognize; treat the fault as unresolved and report the Xid 154 line.
   - Action: operational state `drain`, then `service_required`
 - **WARNING** when `"148.XID_154_MISSING" in nvlink5_resolution_counts && nvlink5_resolution_counts["148.XID_154_MISSING"] >= occurrences`
-  - Message: GPU Xid 148 detected: NVLink NVLPW_CTRL error. Its resolution defers to Xid 154, and no Xid 154 was found for the affected GPU, which normally means the driver requested no recovery action. Restart the faulting application; send the node for service if the error persists.
-  - Action: operational state `drain`, then `restart_app` → `service_required`
+  - Message: GPU Xid 148 detected: NVLink NVLPW_CTRL error. Its resolution defers to Xid 154, and no Xid 154 was found for the affected GPU, which normally means the driver requested no recovery action. Restart the faulting application.
+  - Action: operational state `drain`, then `restart_app`
 - **WARNING** when `"148.UNDECODED" in nvlink5_resolution_counts && nvlink5_resolution_counts["148.UNDECODED"] >= occurrences`
   - Message: GPU Xid 148 detected: NVLink NVLPW_CTRL error. Its log line could not be decoded, so its severity and required action are unknown; inspect the line in the system journal.
 - **INFO** when `"148.IGNORE" in nvlink5_resolution_counts && nvlink5_resolution_counts["148.IGNORE"] >= occurrences`
@@ -646,8 +646,8 @@ Detects NVRM Xid 149 and reports it by the immediate action NVIDIA's Xid 144-150
   - Message: GPU Xid 149 detected: NVLink NETIR error. Its resolution defers to an Xid 154 for the affected GPU whose recovery action this catalog could not read or does not recognize; treat the fault as unresolved and report the Xid 154 line.
   - Action: operational state `drain`, then `service_required`
 - **WARNING** when `"149.XID_154_MISSING" in nvlink5_resolution_counts && nvlink5_resolution_counts["149.XID_154_MISSING"] >= occurrences`
-  - Message: GPU Xid 149 detected: NVLink NETIR error. Its resolution defers to Xid 154, and no Xid 154 was found for the affected GPU, which normally means the driver requested no recovery action. Restart the faulting application; send the node for service if the error persists.
-  - Action: operational state `drain`, then `restart_app` → `service_required`
+  - Message: GPU Xid 149 detected: NVLink NETIR error. Its resolution defers to Xid 154, and no Xid 154 was found for the affected GPU, which normally means the driver requested no recovery action. Restart the faulting application.
+  - Action: operational state `drain`, then `restart_app`
 - **WARNING** when `"149.UNDECODED" in nvlink5_resolution_counts && nvlink5_resolution_counts["149.UNDECODED"] >= occurrences`
   - Message: GPU Xid 149 detected: NVLink NETIR error. Its log line could not be decoded, so its severity and required action are unknown; inspect the line in the system journal.
 - **INFO** when `"149.IGNORE" in nvlink5_resolution_counts && nvlink5_resolution_counts["149.IGNORE"] >= occurrences`
@@ -694,8 +694,8 @@ Detects NVRM Xid 150 and reports it by the immediate action NVIDIA's Xid 144-150
   - Message: GPU Xid 150 detected: NVLink MSE error. Its resolution defers to an Xid 154 for the affected GPU whose recovery action this catalog could not read or does not recognize; treat the fault as unresolved and report the Xid 154 line.
   - Action: operational state `drain`, then `service_required`
 - **WARNING** when `"150.XID_154_MISSING" in nvlink5_resolution_counts && nvlink5_resolution_counts["150.XID_154_MISSING"] >= occurrences`
-  - Message: GPU Xid 150 detected: NVLink MSE error. Its resolution defers to Xid 154, and no Xid 154 was found for the affected GPU, which normally means the driver requested no recovery action. Restart the faulting application; send the node for service if the error persists.
-  - Action: operational state `drain`, then `restart_app` → `service_required`
+  - Message: GPU Xid 150 detected: NVLink MSE error. Its resolution defers to Xid 154, and no Xid 154 was found for the affected GPU, which normally means the driver requested no recovery action. Restart the faulting application.
+  - Action: operational state `drain`, then `restart_app`
 - **WARNING** when `"150.UNDECODED" in nvlink5_resolution_counts && nvlink5_resolution_counts["150.UNDECODED"] >= occurrences`
   - Message: GPU Xid 150 detected: NVLink MSE error. Its log line could not be decoded, so its severity and required action are unknown; inspect the line in the system journal.
 - **INFO** when `"150.IGNORE" in nvlink5_resolution_counts && nvlink5_resolution_counts["150.IGNORE"] >= occurrences`
