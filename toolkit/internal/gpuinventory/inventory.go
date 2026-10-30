@@ -10,10 +10,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 	"sync"
 
 	"github.com/dsx-ai-factory/health-validation/collect"
 	"github.com/dsx-ai-factory/health-validation/collect/observation"
+	"github.com/dsx-ai-factory/health-validation/toolkit/internal/pciaddr"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -67,6 +69,17 @@ func (i *Inventory) Snapshot(ctx context.Context, cycle *collect.Cycle) *observa
 		return i.snapshot
 	}
 	i.cycle, i.snapshot = cycle, i.read(ctx, cycle)
+	return i.snapshot
+}
+
+// Cached returns cycle's snapshot if one was already read, and nil
+// otherwise. It never reads the inventory.
+func (i *Inventory) Cached(cycle *collect.Cycle) *observation.GPUInventorySnapshot {
+	i.mu.Lock()
+	defer i.mu.Unlock()
+	if i.cycle != cycle {
+		return nil
+	}
 	return i.snapshot
 }
 
@@ -140,6 +153,20 @@ func Count(snapshot *observation.GPUInventorySnapshot) (int64, bool) {
 		}
 	}
 	return count, true
+}
+
+// UUIDsByPCI maps the PCI address of each GPU with a UUID and bus ID, in the
+// form the driver prints in Xid lines (0000:89:00), to its UUID.
+func UUIDsByPCI(snapshot *observation.GPUInventorySnapshot) map[string]string {
+	out := make(map[string]string)
+	for _, entry := range snapshot.GetInventory().GetEntries() {
+		uuid := entry.GetGpu().GetUuid()
+		addr, ok := pciaddr.Parse(strings.TrimSuffix(entry.GetGpu().GetBusId(), ".0"))
+		if uuid != "" && ok {
+			out[addr.String()] = uuid
+		}
+	}
+	return out
 }
 
 // Sensor reports [GPUCount] from the cycle's shared snapshot.

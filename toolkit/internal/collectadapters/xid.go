@@ -10,9 +10,8 @@ import (
 )
 
 // XID replaces toolkit.XidSensor for the stock CLI's Xid domain. gpuUUIDs is
-// read each time the adapter builds, after the run's other sensors measured;
-// it maps PCI addresses in the kernel's Xid form to GPU UUIDs. Nil leaves
-// every GPU named by its address.
+// read each time the adapter builds; it maps PCI addresses in the kernel's
+// Xid form to GPU UUIDs. Nil leaves every GPU named by its address.
 func XID(gpuUUIDs func() map[string]string) *domainAdapter {
 	a := newDomainAdapter(health.Xid, erroredXid, true)
 	a.gpuUUIDs = gpuUUIDs

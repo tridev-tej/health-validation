@@ -93,9 +93,6 @@ type hostBackend interface {
 	gpuBackend() toolkit.GPUBackend
 	nvlinkBackend() toolkit.NVLinkBackend
 	gpuInventory() *gpuinventory.Inventory
-	// gpuUUIDsByPCI returns the UUID of each GPU the host backend has
-	// probed, keyed by PCI address in the kernel's Xid form.
-	gpuUUIDsByPCI() map[string]string
 	close() error
 }
 
@@ -486,7 +483,7 @@ func (a *App) sensors(cycle *collect.Cycle, required requiredSignals, xidJournal
 	if a.node != nil {
 		sensors = append(sensors, toolkit.NewNodeSensor(a.node))
 	}
-	builtinSources, builtinAdapters := a.builtinCollect()
+	builtinSources, builtinAdapters := a.builtinCollect(cycle)
 	if xidJournal != nil {
 		for i, source := range builtinSources {
 			if source.ID() == xidsensor.ID {

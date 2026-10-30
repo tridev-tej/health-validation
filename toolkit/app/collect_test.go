@@ -48,7 +48,7 @@ func (a *App) collectSensors(timeout time.Duration, builtinSources []collect.Sen
 func TestMigratedDomainsDefaultToCollectSensors(t *testing.T) {
 	builtins := func(a *App) ([]string, []string) {
 		a.host = fakeHost{b: spyBackend{called: new(bool)}}
-		sources, adapters := a.builtinCollect()
+		sources, adapters := a.builtinCollect(nil)
 		var sourceIDs, adapterNames []string
 		for _, s := range sources {
 			sourceIDs = append(sourceIDs, s.ID())
@@ -80,7 +80,7 @@ func TestMigratedDomainsDefaultToCollectSensors(t *testing.T) {
 func TestCollectSkipsUnselectedBridgeSources(t *testing.T) {
 	source := &collectAppSensor{}
 	a := New().WithCollect(source).WithCollectAdapters(customCountAdapter())
-	builtinSources, builtinAdapters := a.builtinCollect()
+	builtinSources, builtinAdapters := a.builtinCollect(nil)
 	sensors, err := a.collectSensors(time.Second, builtinSources, builtinAdapters, requiredSignals{health.GPU: nil})
 	if err != nil {
 		t.Fatal(err)
@@ -1201,7 +1201,7 @@ func TestCollectSensorsRequestsOnlyRunnableCheckSignals(t *testing.T) {
 // collect-backed domain must therefore be fed by that domain's adapter, from
 // signals its built-in source declares.
 func TestBuiltinCollectFeedsEveryBuiltinCheck(t *testing.T) {
-	sources, adapters := New().builtinCollect()
+	sources, adapters := New().builtinCollect(nil)
 	var produced []string
 	for _, source := range sources {
 		for _, signal := range source.Signals() {

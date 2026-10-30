@@ -152,6 +152,7 @@ type parityDevice struct {
 }
 
 func (d *parityDevice) UUID() string                     { return fmt.Sprintf("GPU-%d", d.index) }
+func (d *parityDevice) PCIBusID() string                 { return fmt.Sprintf("0000:%02x:00.0", d.index+1) }
 func (d *parityDevice) GetName() (string, gonvml.Return) { return d.slot.name, gonvml.SUCCESS }
 
 // parityHost serves one collect NVML inventory to the app.
@@ -164,7 +165,6 @@ func (parityHost) nvlinkBackend() toolkit.NVLinkBackend {
 	panic("legacy NVLink backend is not under test")
 }
 func (h parityHost) gpuInventory() *gpuinventory.Inventory { return h.inventory }
-func (parityHost) gpuUUIDsByPCI() map[string]string        { return nil }
 func (parityHost) close() error                            { return nil }
 
 func parityCatalog(t *testing.T) *catalog.Catalog {
@@ -211,7 +211,7 @@ func runCollect(t *testing.T, n parityNode) (discovery, health.NodeVerdict, int3
 		t.Fatal(err)
 	}
 	arch, err := gpuinventory.Architecture(a.host.gpuInventory().Snapshot(context.Background(), cycle))
-	sources, adapters := a.builtinCollect()
+	sources, adapters := a.builtinCollect(cycle)
 	sensors, err2 := a.collectSensorsIn(cycle, sources, adapters, nil)
 	if err2 != nil {
 		t.Fatal(err2)

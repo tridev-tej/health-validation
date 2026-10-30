@@ -19,6 +19,7 @@ import (
 	"github.com/dsx-ai-factory/health-validation/toolkit"
 	"github.com/dsx-ai-factory/health-validation/toolkit/internal/collectadapters"
 	"github.com/dsx-ai-factory/health-validation/toolkit/internal/collectbridge"
+	"github.com/dsx-ai-factory/health-validation/toolkit/internal/gpuinventory"
 	"github.com/dsx-ai-factory/health-validation/toolkit/observations"
 	"github.com/google/uuid"
 )
@@ -100,7 +101,7 @@ func (a *App) WithCollectAdapters(adapters ...CollectAdapter) *App {
 // With*Backend override keeps the legacy sensor instead. The node domain
 // reads the host GPU inventory that architecture discovery already read in
 // this cycle, so counting GPUs does not enumerate them again.
-func (a *App) builtinCollect() ([]collect.Sensor, []CollectAdapter) {
+func (a *App) builtinCollect(cycle *collect.Cycle) ([]collect.Sensor, []CollectAdapter) {
 	var sources []collect.Sensor
 	var adapters []CollectAdapter
 	if a.cpu == nil {
@@ -113,12 +114,14 @@ func (a *App) builtinCollect() ([]collect.Sensor, []CollectAdapter) {
 	}
 	if a.xid == nil {
 		sources = append(sources, xidsensor.New(nil))
-		// The lookup is read when the adapter builds, after the GPU and
-		// NVLink sensors (first in App.sensors) probed NVML. A GPU those
-		// probes did not identify, as with every GPU when both sensors use
-		// backends not derived from App.NVMLBackend, is named by its PCI
-		// address.
-		adapters = append(adapters, collectadapters.XID(a.host.gpuUUIDsByPCI))
+		// GPUs are named from the inventory discovery or the node domain
+		// already read this cycle. The lookup never reads NVML itself, so a
+		// wedged driver cannot hold up Xid collection; without a snapshot,
+		// each GPU is named by its PCI address.
+		inventory := a.host.gpuInventory()
+		adapters = append(adapters, collectadapters.XID(func() map[string]string {
+			return gpuinventory.UUIDsByPCI(inventory.Cached(cycle))
+		}))
 	}
 	return sources, adapters
 }

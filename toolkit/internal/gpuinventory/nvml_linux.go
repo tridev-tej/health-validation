@@ -24,10 +24,11 @@ import (
 const nvmlSource = "nvml"
 
 // NVML reads the basic inventory from inst's existing enumeration: every
-// slot with its handle and UUID outcome, which needs no further NVML call,
-// and GPU models in index order until one maps to an architecture, as legacy
-// discovery read them. Serial, VBIOS, PCI, platform, and fabric attributes are
-// not read; collect's NVML sensor can enrich the same devices on request.
+// slot with its handle, UUID and bus ID outcome, which needs no further NVML
+// call, and GPU models in index order until one maps to an architecture, as
+// legacy discovery read them. Serial, VBIOS, other PCI, platform, and fabric
+// attributes are not read; collect's NVML sensor can enrich the same devices
+// on request.
 func NVML(inst nvmlsource.Instance) Reader { return nvmlReader{inst: inst} }
 
 type nvmlReader struct {
@@ -93,6 +94,9 @@ func basicEntry(record nvmlsource.InventoryDevice) *observation.GPUInventoryEntr
 	default:
 		uuid := record.Device.UUID()
 		entry.Gpu.Uuid = &uuid
+		if busID := record.Device.PCIBusID(); busID != "" {
+			entry.Gpu.BusId = &busID
+		}
 	}
 	return entry
 }

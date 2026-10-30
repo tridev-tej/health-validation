@@ -17,7 +17,6 @@ import (
 	"github.com/dsx-ai-factory/health-validation/collect"
 	"github.com/dsx-ai-factory/health-validation/collect/observation"
 	xidsignals "github.com/dsx-ai-factory/health-validation/collect/signals/xid"
-	"github.com/dsx-ai-factory/health-validation/toolkit"
 	"github.com/dsx-ai-factory/health-validation/toolkit/internal/gpuinventory"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -111,35 +110,38 @@ func TestRunCommandCollectsXidThroughBridge(t *testing.T) {
 
 const xidTestUUID = "GPU-1ca2785e-36e2-9732-d151-d6b1625701e9"
 
-// fillingBackend stands in for the NVML backend, which records each GPU's
-// UUID while the GPU sensor measures.
-type fillingBackend struct {
-	uuids map[string]string
+// busReader reports one GB200 GPU with the bus ID form go-nvlib returns.
+type busReader struct {
+	reads *int
 }
 
-func (f fillingBackend) MeasureGPUs() ([]health.Measurement, error) {
-	f.uuids["0000:89:00"] = xidTestUUID
-	return nil, nil
-}
-func (fillingBackend) MeasureNVLink() ([]health.Measurement, error) { return nil, nil }
+func (busReader) ID() string { return "fake" }
 
-// uuidHost's lookup is empty until its GPU backend measures. Like the NVML
-// host it returns a copy, so a lookup read too early stays empty.
-type uuidHost struct {
-	b fillingBackend
+func (r busReader) Read(context.Context) (*observation.GPUInventorySnapshot, error) {
+	*r.reads++
+	uuid, model, busID := xidTestUUID, "NVIDIA GB200", "0000:89:00.0"
+	entry := &observation.GPUInventoryEntry{Gpu: &observation.GPUDevice{Uuid: &uuid, Model: &model, BusId: &busID}}
+	inventory := &observation.GPUInventory{Entries: []*observation.GPUInventoryEntry{entry}}
+	return &observation.GPUInventorySnapshot{Source: "fake", Outcome: &observation.GPUInventorySnapshot_Inventory{Inventory: inventory}}, nil
 }
 
-func (h uuidHost) gpuBackend() toolkit.GPUBackend       { return h.b }
-func (h uuidHost) nvlinkBackend() toolkit.NVLinkBackend { return h.b }
-func (uuidHost) gpuInventory() *gpuinventory.Inventory  { return fakeHost{}.gpuInventory() }
-func (uuidHost) close() error                           { return nil }
-func (h uuidHost) gpuUUIDsByPCI() map[string]string     { return maps.Clone(h.b.uuids) }
+// busHost is fakeHost with one shared inventory, as the NVML host has.
+type busHost struct {
+	inventory *gpuinventory.Inventory
+	fakeHost
+}
 
-// The Xid adapter reads the host's lookup when it builds, after the GPU
-// sensor ran; a GPU the lookup does not name keeps its PCI address.
+func (h busHost) gpuInventory() *gpuinventory.Inventory { return h.inventory }
+
+// The Xid adapter names GPUs from the inventory discovery read, without a
+// second read; a GPU the inventory does not name keeps its PCI address.
 func TestRunCommandResolvesXidGPUUUIDs(t *testing.T) {
+	reads := 0
 	a := cadenceRunApp()
-	a.host = uuidHost{b: fillingBackend{uuids: map[string]string{}}}
+	a.host = busHost{
+		inventory: gpuinventory.New(func() (gpuinventory.Reader, error) { return busReader{reads: &reads}, nil }),
+		fakeHost:  a.host.(fakeHost),
+	}
 	a.xid = nil
 	var obs []*observation.Observation
 	for cursor, pci := range map[string]string{"c1": "0000:89:00", "c2": "0000:c1:00"} {
@@ -170,6 +172,9 @@ func TestRunCommandResolvesXidGPUUUIDs(t *testing.T) {
 	}
 	if !maps.Equal(got, want) {
 		t.Fatalf("CRITICAL gpu_xid_48 results (entities: gpu_id, pci_address) = %v, want %v", got, want)
+	}
+	if reads != 1 {
+		t.Fatalf("inventory read %d times, want 1 shared by discovery and the Xid adapter", reads)
 	}
 }
 
