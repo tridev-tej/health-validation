@@ -53,10 +53,10 @@ func linkFlapMatcher(since string) journalMatcher {
 func TestReadJournalCleanBootIsNotErrored(t *testing.T) {
 	const since = "2026-08-31 13:00:00"
 
-	// The liveness probe (-n 1) returns a line so the journal itself reads as
-	// readable; the scoped kernel read has no entries.
+	// The kernel liveness probe (--dmesg -n 1) returns a line so the journal
+	// reads as readable; the scoped kernel read has no entries.
 	run := cannedRun(func(_ context.Context, args ...string) ([]byte, error) {
-		if slices.Contains(args, "-n") {
+		if slices.Contains(args, "-n") && slices.Contains(args, "--dmesg") {
 			return []byte("some unrelated log line\n"), nil
 		}
 		if slices.Contains(args, "--quiet") {
@@ -74,6 +74,30 @@ func TestReadJournalCleanBootIsNotErrored(t *testing.T) {
 	}
 	if errs := ms[0].Errors(); len(errs) != 0 {
 		t.Errorf("clean boot recorded %d collection error(s), want 0: %v", len(errs), errs)
+	}
+}
+
+// A user outside the journal groups reads their own journal but no kernel
+// entries; the probe must not take the first for the second.
+func TestReadJournalUnreadableKernelJournalIsErrored(t *testing.T) {
+	run := cannedRun(func(_ context.Context, args ...string) ([]byte, error) {
+		if slices.Contains(args, "-n") && !slices.Contains(args, "--dmesg") {
+			return []byte("user session started\n"), nil
+		}
+		return nil, nil
+	})
+
+	ms, err := readJournal(context.Background(), run, linkFlapMatcher("2026-08-31 13:00:00"))
+	if err != nil {
+		t.Fatalf("readJournal: %v", err)
+	}
+	if len(ms) != 1 {
+		t.Fatalf("got %d measurements, want 1", len(ms))
+	}
+	errs := ms[0].Errors()
+	if len(errs) != 1 || !slices.Equal(errs[0].FailedSignals(), infiniband.MeasurementSignals()) ||
+		!strings.Contains(errs[0].Err().Error(), "journal unreadable, cannot confirm link state") {
+		t.Fatalf("errors = %v, want every link-flap signal failed as an unreadable journal", errs)
 	}
 }
 

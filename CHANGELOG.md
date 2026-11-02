@@ -17,6 +17,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - The public `catalog/version` package is removed. Read the version from a
   verdict's `catalog_version`. In unstamped builds, `health-validation version`
   now reports the module version Go embeds, or `dev+<commit>`, instead of `dev`.
+- `CheckDefinition.Validate`, and so `Catalog.Register` and `MustRegister`,
+  rejects a check that names no `RequiredSignals`. Such a check was routed
+  every measurement of its category and ran its rules on zero values when
+  collection failed. Name the signals the check's rules read. A custom check
+  passed to the CLI through `App.WithChecks` without them now stops the run
+  with exit 2 once GPU architecture discovery succeeds, before the sensors
+  are collected. If discovery fails, `run` still reports the
+  `architecture_discovery` verdict and exits 1.
 
 ## [catalog/v0.3.0] and [toolkit/v0.3.0] - 2026-10-05
 

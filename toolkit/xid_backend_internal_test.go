@@ -146,8 +146,8 @@ func TestJournalctlBackendMeasure(t *testing.T) {
 	}
 }
 
-// TestJournalReadableProbeArgs guards that the liveness probe reads an entry
-// from the complete journal rather than applying a domain filter.
+// TestJournalReadableProbeArgs guards that the liveness probe reads one kernel
+// entry rather than applying a domain filter.
 func TestJournalReadableProbeArgs(t *testing.T) {
 	var gotArgs []string
 	b := &journalctlBackend{run: cannedRun(func(_ context.Context, args ...string) ([]byte, error) {
@@ -156,6 +156,9 @@ func TestJournalReadableProbeArgs(t *testing.T) {
 	})}
 	if err := journalReadable(context.Background(), b.run); err != nil {
 		t.Fatalf("journalReadable: %v", err)
+	}
+	if !slices.Contains(gotArgs, "--dmesg") {
+		t.Fatalf("liveness probe must read kernel entries with --dmesg, got args: %v", gotArgs)
 	}
 	for _, a := range gotArgs {
 		if strings.HasPrefix(a, "--grep") {

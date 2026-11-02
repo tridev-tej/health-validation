@@ -111,20 +111,22 @@ func readJournal(ctx context.Context, run runFunc, m journalMatcher) ([]health.M
 	return []health.Measurement{m.parse(result.lines)}, nil
 }
 
-// journalReadable confirms the current boot's journal holds at least one entry.
-// A live host journal always does — a booted Linux host logs continuously — so
-// an empty result (or a read error) means journalctl is pointed at an empty or
-// absent journal, not that the boot was event-free. It carries no domain filter,
-// so it counts entries rather than matching the pattern being validated. Returns
-// nil only when the journal is demonstrably readable.
+// journalReadable confirms the current boot's kernel journal holds at least one
+// entry. A booted Linux host always logs kernel messages, so an empty result
+// (or a read error) means journalctl cannot see them, not that the boot was
+// event-free. It reads with --dmesg, the primary read's scope, because a user
+// outside the journal groups can still read their own entries; an unscoped
+// probe would pass while the kernel read sees nothing. It carries no domain
+// filter, so it counts entries rather than matching the pattern being
+// validated. Returns nil only when the kernel journal is demonstrably readable.
 func journalReadable(ctx context.Context, run runFunc) error {
 	nonBlank := func(line string) bool { return strings.TrimSpace(line) != "" }
-	result, err := run(ctx, nonBlank, "--boot", "--no-pager", "--output=cat", "-n", "1")
+	result, err := run(ctx, nonBlank, "--dmesg", "--boot", "--no-pager", "--output=cat", "-n", "1")
 	if err != nil {
 		return journalCommandError(err)
 	}
 	if len(result.lines) == 0 {
-		return errors.New("current boot has no journal entries")
+		return errors.New("current boot has no kernel journal entries")
 	}
 	return nil
 }

@@ -819,8 +819,8 @@ func loadOptionalConfig(path string) (*Config, error) {
 // timeout.
 func buildCatalog(cfg *Config, customChecks []health.CheckDefinition, arch string, executionContext health.ExecutionContext) (*catalog.Catalog, time.Duration, error) {
 	// register adds the caller-supplied checks to a freshly built catalog.
-	// Classification is passed through untouched; the only failure is the
-	// catalog's duplicate-ID guard.
+	// Classification is passed through untouched; registration fails only on
+	// the catalog's own validation or a duplicate ID.
 	register := func(c *catalog.Catalog) error {
 		for _, cd := range customChecks {
 			if err := c.Register(cd); err != nil {
