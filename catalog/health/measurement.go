@@ -146,3 +146,14 @@ type EntityIdentifier interface {
 type ObservedValuesScoper interface {
 	ScopeObservedValues(checkID string, observed map[string]any) map[string]any
 }
+
+// CheckSetAware is an optional interface a measurement may implement to see
+// the registered check definitions before its signals are read. It returns a
+// measurement that interprets its data against them: the Xid measurement
+// uses their ErrorCodes to tell the codes some check covers from those none
+// does. defs holds every registered check, disabled ones included, and must
+// not be modified. The receiver is not modified; routing and the signal
+// schema must not change.
+type CheckSetAware interface {
+	WithChecks(defs []*CheckDefinition) Measurement
+}
