@@ -122,6 +122,15 @@ func TestNVMLReaderReadsBasicInventory(t *testing.T) {
 	}
 }
 
+func TestNVMLReaderReportsMissingBusID(t *testing.T) {
+	noBus := gpu(0, "NVIDIA GB200")
+	noBus.Device.(*basicDevice).busID = ""
+	entry := readSnapshot(t, withRecords(noBus)).GetInventory().GetEntries()[0]
+	if entry.GetGpu().BusId != nil || entry.GetGpu().GetUuid() != "GPU-0" || entry.GetFieldErrors()["bus_id"].GetOperation() != "GetPciInfo" {
+		t.Errorf("entry = %v, want the UUID and a GetPciInfo bus_id field error", entry)
+	}
+}
+
 // Models are read only until one is recognized, so a later GPU whose name
 // read would hang cannot block discovery.
 func TestNVMLReaderStopsAtRecognizedModel(t *testing.T) {

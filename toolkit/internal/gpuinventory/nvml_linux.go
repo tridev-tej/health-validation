@@ -96,6 +96,10 @@ func basicEntry(record nvmlsource.InventoryDevice) *observation.GPUInventoryEntr
 		entry.Gpu.Uuid = &uuid
 		if busID := record.Device.PCIBusID(); busID != "" {
 			entry.Gpu.BusId = &busID
+		} else {
+			// The enumeration drops the read's return code, so the failure
+			// is reported as collect's full inventory reports an empty one.
+			entry.FieldErrors = map[string]*observation.CollectionError{"bus_id": nvmlFailure("GetPciInfo", nvml.ERROR_NO_DATA, "")}
 		}
 	}
 	return entry
