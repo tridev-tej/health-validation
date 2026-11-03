@@ -410,6 +410,7 @@ Detects NVRM Xid 144 and reports it by the immediate action NVIDIA's Xid 144-150
   - Action: operational state `drain`, then `restart_app`
 - **WARNING** when `"144.UNDECODED" in nvlink5_resolution_counts && nvlink5_resolution_counts["144.UNDECODED"] >= occurrences`
   - Message: GPU Xid 144 detected: NVLink SAW error. Its log line could not be decoded, so its severity and required action are unknown; inspect the line in the system journal.
+  - Action: operational state `monitor`
 - **INFO** when `"144.IGNORE" in nvlink5_resolution_counts && nvlink5_resolution_counts["144.IGNORE"] >= occurrences`
   - Message: GPU Xid 144 detected: NVLink SAW error. This occurrence resolves to no action.
 
@@ -458,6 +459,7 @@ Detects NVRM Xid 145 and reports it by the immediate action NVIDIA's Xid 144-150
   - Action: operational state `drain`, then `restart_app`
 - **WARNING** when `"145.UNDECODED" in nvlink5_resolution_counts && nvlink5_resolution_counts["145.UNDECODED"] >= occurrences`
   - Message: GPU Xid 145 detected: NVLink RLW error. Its log line could not be decoded, so its severity and required action are unknown; inspect the line in the system journal.
+  - Action: operational state `monitor`
 - **INFO** when `"145.IGNORE" in nvlink5_resolution_counts && nvlink5_resolution_counts["145.IGNORE"] >= occurrences`
   - Message: GPU Xid 145 detected: NVLink RLW error. This occurrence resolves to no action.
 
@@ -506,6 +508,7 @@ Detects NVRM Xid 146 and reports it by the immediate action NVIDIA's Xid 144-150
   - Action: operational state `drain`, then `restart_app`
 - **WARNING** when `"146.UNDECODED" in nvlink5_resolution_counts && nvlink5_resolution_counts["146.UNDECODED"] >= occurrences`
   - Message: GPU Xid 146 detected: NVLink TLW error. Its log line could not be decoded, so its severity and required action are unknown; inspect the line in the system journal.
+  - Action: operational state `monitor`
 - **INFO** when `"146.IGNORE" in nvlink5_resolution_counts && nvlink5_resolution_counts["146.IGNORE"] >= occurrences`
   - Message: GPU Xid 146 detected: NVLink TLW error. This occurrence resolves to no action.
 
@@ -554,6 +557,7 @@ Detects NVRM Xid 147 and reports it by the immediate action NVIDIA's Xid 144-150
   - Action: operational state `drain`, then `restart_app`
 - **WARNING** when `"147.UNDECODED" in nvlink5_resolution_counts && nvlink5_resolution_counts["147.UNDECODED"] >= occurrences`
   - Message: GPU Xid 147 detected: NVLink TREX error. Its log line could not be decoded, so its severity and required action are unknown; inspect the line in the system journal.
+  - Action: operational state `monitor`
 - **INFO** when `"147.IGNORE" in nvlink5_resolution_counts && nvlink5_resolution_counts["147.IGNORE"] >= occurrences`
   - Message: GPU Xid 147 detected: NVLink TREX error. This occurrence resolves to no action.
 
@@ -602,6 +606,7 @@ Detects NVRM Xid 148 and reports it by the immediate action NVIDIA's Xid 144-150
   - Action: operational state `drain`, then `restart_app`
 - **WARNING** when `"148.UNDECODED" in nvlink5_resolution_counts && nvlink5_resolution_counts["148.UNDECODED"] >= occurrences`
   - Message: GPU Xid 148 detected: NVLink NVLPW_CTRL error. Its log line could not be decoded, so its severity and required action are unknown; inspect the line in the system journal.
+  - Action: operational state `monitor`
 - **INFO** when `"148.IGNORE" in nvlink5_resolution_counts && nvlink5_resolution_counts["148.IGNORE"] >= occurrences`
   - Message: GPU Xid 148 detected: NVLink NVLPW_CTRL error. This occurrence resolves to no action.
 
@@ -650,6 +655,7 @@ Detects NVRM Xid 149 and reports it by the immediate action NVIDIA's Xid 144-150
   - Action: operational state `drain`, then `restart_app`
 - **WARNING** when `"149.UNDECODED" in nvlink5_resolution_counts && nvlink5_resolution_counts["149.UNDECODED"] >= occurrences`
   - Message: GPU Xid 149 detected: NVLink NETIR error. Its log line could not be decoded, so its severity and required action are unknown; inspect the line in the system journal.
+  - Action: operational state `monitor`
 - **INFO** when `"149.IGNORE" in nvlink5_resolution_counts && nvlink5_resolution_counts["149.IGNORE"] >= occurrences`
   - Message: GPU Xid 149 detected: NVLink NETIR error. This occurrence resolves to no action.
 
@@ -698,6 +704,7 @@ Detects NVRM Xid 150 and reports it by the immediate action NVIDIA's Xid 144-150
   - Action: operational state `drain`, then `restart_app`
 - **WARNING** when `"150.UNDECODED" in nvlink5_resolution_counts && nvlink5_resolution_counts["150.UNDECODED"] >= occurrences`
   - Message: GPU Xid 150 detected: NVLink MSE error. Its log line could not be decoded, so its severity and required action are unknown; inspect the line in the system journal.
+  - Action: operational state `monitor`
 - **INFO** when `"150.IGNORE" in nvlink5_resolution_counts && nvlink5_resolution_counts["150.IGNORE"] >= occurrences`
   - Message: GPU Xid 150 detected: NVLink MSE error. This occurrence resolves to no action.
 

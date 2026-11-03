@@ -162,7 +162,7 @@ resolve to:
 - **WARNING** with `["service_required"]` when the Xid 154 names an action
   this catalog does not map or could not be read; with
   `["restart_app"]` when the row defers to an Xid 154
-  and none was found; and with no action when the log line could not be
+  and none was found; and with `monitor` when the log line could not be
   decoded.
 - **INFO** with no action when the occurrence resolves to no action.
 

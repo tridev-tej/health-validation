@@ -463,7 +463,8 @@ func TestNVLink5Check_No154MeansRestartApp(t *testing.T) {
 
 // TestNVLink5Check_UndecodedLineStillReports covers an NVLink5 event the
 // sensor could not decode, which carries a code but no detail. It must
-// still report rather than pass on an empty resolution signal.
+// still report rather than pass on an empty resolution signal, and flag
+// the node for watching without naming a repair it cannot justify.
 func TestNVLink5Check_UndecodedLineStillReports(t *testing.T) {
 	nv, err := hostCatalog(t, "575.51.03").EvaluateAll(xid.XidMeasurement{
 		Since:      "boot",
@@ -480,6 +481,9 @@ func TestNVLink5Check_UndecodedLineStillReports(t *testing.T) {
 	}
 	if v.Severity != health.Warning {
 		t.Errorf("severity = %v, want WARNING", v.Severity)
+	}
+	if !v.RecommendedAction.Equal(health.Monitor) {
+		t.Errorf("RecommendedAction = %v, want %v", v.RecommendedAction, health.Monitor)
 	}
 }
 

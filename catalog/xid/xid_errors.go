@@ -470,9 +470,10 @@ func nvlink5Check(c nvlink5Xid) health.CheckDefinition {
 			RecommendedAction: health.Drain(health.RemediationActionRestartApp),
 		},
 		{
-			Expression: key(ResolutionUndecoded),
-			Severity:   health.Warning,
-			Message:    fmt.Sprintf("GPU Xid %d detected: %s. Its log line could not be decoded, so its severity and required action are unknown; inspect the line in the system journal.", c.code, c.description),
+			Expression:        key(ResolutionUndecoded),
+			Severity:          health.Warning,
+			Message:           fmt.Sprintf("GPU Xid %d detected: %s. Its log line could not be decoded, so its severity and required action are unknown; inspect the line in the system journal.", c.code, c.description),
+			RecommendedAction: health.Monitor,
 		},
 		{
 			Expression: key(ResolutionIgnore),
